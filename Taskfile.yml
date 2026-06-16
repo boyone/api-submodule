@@ -1,0 +1,54 @@
+version: '3'
+
+vars:
+  BINARY: bin/api
+  IMAGE: api-submodule:dev
+  PORT: '8080'
+
+tasks:
+  build:
+    desc: Compile the API binary
+    cmds:
+      - go build -ldflags="-s -w" -o {{.BINARY}} .
+    sources:
+      - ./**/*.go
+      - go.mod
+    generates:
+      - '{{.BINARY}}'
+
+  run:
+    desc: Run the API locally
+    cmds:
+      - go run .
+    env:
+      PORT: '{{.PORT}}'
+
+  tidy:
+    desc: Sync go.mod and go.sum
+    cmds:
+      - go mod tidy
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  test:
+    desc: Run go test
+    cmds:
+      - go test ./...
+
+  docker:build:
+    desc: Build the Docker image
+    cmds:
+      - docker build -t {{.IMAGE}} .
+
+  docker:run:
+    desc: Run the Docker image locally
+    cmds:
+      - docker run --rm -p {{.PORT}}:{{.PORT}} {{.IMAGE}}
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf bin/
