@@ -27,7 +27,7 @@ func main() {
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{
-		"message": "Hello, World API!",
+		"message": "Hello, World API2!",
 	})
 }
 
